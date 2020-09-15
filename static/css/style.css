@@ -426,6 +426,16 @@ button:focus{
     box-shadow: 0 0 10px #ccc;
 }
 
+.gallery-single-menu {
+}
+
+.gallery-single-menu {
+    position: relative;
+    overflow: hidden;
+    -webkit-box-shadow: 0 0 10px #ccc;
+    box-shadow: 0 0 10px #ccc;
+}
+
 .why-text {
     position: absolute;
     left: 0;
@@ -460,6 +470,14 @@ button:focus{
 
 .gallery-single:hover .why-text{
 	bottom: 0px;
+}
+
+.gallery-single-menu:hover .why-text-menu{
+	bottom: 0px;
+}
+
+.add-footer{
+margin-bottom:20px;
 }
 
 
