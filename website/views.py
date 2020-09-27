@@ -1,25 +1,39 @@
 from django.shortcuts import render
 from .models import Product,Order,OrderItem
+import json
+from django.http import JsonResponse
 
 # Create your views here.
 def home(request):
-    foods = Product.objects.all()
+    if request.user.is_authenticated:
+        customer = request.user.customer
+        order = Order.objects.get(customer=customer)
+    else:
+        order = {'total_items':0, 'total_price':0}
+    items = Product.objects.all()
     drinks = Product.objects.filter(category='Drinks')
     indians = Product.objects.filter(category='Indian')
     chineses = Product.objects.filter(category='Chinese')
     context = {
-        'foods':foods,
-        'drinks':drinks,
-        'chineses':chineses,
-        'indians':indians,
+        'items':items,
+        'order': order,
+        'drinks': drinks,
+        'chineses': chineses,
+        'indians': indians,
     }
     return  render(request,'website/index.html',context)
 
 def menu(request):
+    if request.user.is_authenticated:
+        customer = request.user.customer
+        order = Order.objects.get(customer=customer)
+    else:
+        order = {'total_items':0, 'total_price':0}
     drinks = Product.objects.filter(category='Drinks')
     indians = Product.objects.filter(category='Indian')
     chineses = Product.objects.filter(category='Chinese')
     context = {
+        'order':order,
         'drinks':drinks,
         'chineses':chineses,
         'indians':indians,
@@ -27,9 +41,13 @@ def menu(request):
     return render(request,'website/menu.html',context)
 
 def basket(request):
-    customer = request.user.customer
-    order = Order.objects.get(customer=customer)
-    foods = OrderItem.objects.all()
+    if request.user.is_authenticated:
+        customer = request.user.customer
+        order = Order.objects.get(customer=customer)
+        foods = order.orderitem_set.all()
+    else:
+        order = {'total_items':0,'total_price':0}
+        foods = []
     context = {
         'order':order,
         'foods':foods,
@@ -37,9 +55,13 @@ def basket(request):
     return render(request, 'website/basket.html',context)
 
 def checkout(request):
-    customer = request.user.customer
-    order = Order.objects.get(customer=customer)
-    foods = OrderItem.objects.all()
+    if request.user.is_authenticated:
+        customer = request.user.customer
+        order = Order.objects.get(customer=customer)
+        foods = order.orderitem_set.all()
+    else:
+        order = {'total_items': 0, 'total_price': 0}
+        foods = []
     context = {
         'order': order,
         'foods': foods,
@@ -47,19 +69,83 @@ def checkout(request):
     return render(request, 'website/checkout.html',context)
 
 def login(request):
-    return render(request, 'website/login.html')
+    if request.user.is_authenticated:
+        customer = request.user.customer
+        order = Order.objects.get(customer=customer)
+    else:
+        order = {'total_items':0,'total_price':0}
+    context = {
+        'order': order,
+    }
+    return render(request, 'website/login.html',context)
+
+def updateOrder(request):
+    data = json.loads(request.body)
+    productId,action = data['productId'],data['action']
+    print(productId,action)
+
+    customer = request.user.customer
+    product = Product.objects.get(id=productId)
+    order,created = Order.objects.get_or_create(customer=customer,complete=False)
+    foods,created = OrderItem.objects.get_or_create(order=order,product=product)
+
+    if action=='add':
+        foods.quantity += 1
+    foods.save()
+
+    return JsonResponse("You are done.",safe=False)
 
 def contact(request):
-    return render(request, 'website/contact.html')
+    if request.user.is_authenticated:
+        customer = request.user.customer
+        order = Order.objects.get(customer=customer)
+    else:
+        order = {'total_items': 0, 'total_price': 0}
+    context = {
+        'order': order,
+    }
+    return render(request, 'website/contact.html',context)
 
 def about(request):
-    return render(request, 'website/about.html')
+    if request.user.is_authenticated:
+        customer = request.user.customer
+        order = Order.objects.get(customer=customer)
+    else:
+        order = {'total_items': 0, 'total_price': 0}
+    context = {
+        'order': order,
+    }
+    return render(request, 'website/about.html',context)
 
 def gallery(request):
-    return render(request, 'website/gallery.html')
+    if request.user.is_authenticated:
+        customer = request.user.customer
+        order = Order.objects.get(customer=customer)
+    else:
+        order = {'total_items': 0, 'total_price': 0}
+    context = {
+        'order': order,
+    }
+    return render(request, 'website/gallery.html',context)
 
 def reservation(request):
-    return render(request, 'website/reservation.html')
+    if request.user.is_authenticated:
+        customer = request.user.customer
+        order = Order.objects.get(customer=customer)
+    else:
+        order = {'total_items': 0, 'total_price': 0}
+    context = {
+        'order': order,
+    }
+    return render(request, 'website/reservation.html',context)
 
 def staff(request):
-    return render(request, 'website/staff.html')
+    if request.user.is_authenticated:
+        customer = request.user.customer
+        order = Order.objects.get(customer=customer)
+    else:
+        order = {'total_items': 0, 'total_price': 0}
+    context = {
+        'order': order,
+    }
+    return render(request, 'website/staff.html',context)

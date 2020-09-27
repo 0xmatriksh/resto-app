@@ -34,7 +34,24 @@
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-
+	  <script>var user = '{{request.user}}'
+		function getToken(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+          }
+          var csrftoken = getToken('csrftoken')
+	  </script>
 </head>
 
 <body>
@@ -75,7 +92,7 @@
                 		<a href="{% url 'basket' %}">
 							<img  id="cart-icon" src="{% static 'images/cart.png' %}">
                 		</a>
-                		<p id="cart-total">0</p>
+                		<p id="cart-total">{{order.total_items}}</p>
 					</div>
 				</div>
 			</div>
@@ -94,5 +111,6 @@
 	<script src="{% static 'js/form-validator.min.js' %}"></script>
     <script src="{% static 'js/contact-form-script.js' %}"></script>
     <script src="{% static 'js/custom.js' %}"></script>
+	<script src="{% static 'js/basket.js' %}"></script>
 </body>
 </html>

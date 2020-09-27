@@ -24,7 +24,7 @@
                     <th><h5>Foods: <strong>{{order.total_items}}</strong></h5></th>
                     <th><h5>Total:<strong>{{order.total_price}}</strong></h5></th>
                     <th>
-                        <a  style="float:right; margin:5px;" class="btn btn-warning" href="">Checkout</a>
+                        <a  style="float:right; margin:5px;" class="btn btn-warning" href="{% url 'checkout' %}">Checkout</a>
                     </th>
                 </tr>
             </table>

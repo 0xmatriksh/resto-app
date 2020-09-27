@@ -117,14 +117,14 @@
 					<div class="tab-content" id="v-pills-tabContent">
 						<div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
 							<div class="row">
-								{% for food in foods %}
+								{% for item in items %}
 								<div class="col-lg-4 col-md-6 special-grid drinks">
 									<div class="gallery-single fix">
-										<img src="{{food.imageURL}}" class="img-fluid" alt="Image">
+										<img src="{{item.imageURL}}" class="img-fluid" alt="Image">
 										<div class="why-text">
-											<h4>{{food.name}}</h4>
-											<p>{{food.description}}</p>
-											<h5>Rs.{{food.price}}</h5>
+											<h4>{{item.name}}</h4>
+											<p>{{item.description}}</p>
+											<h5>Rs.{{item.price}}</h5>
 										</div>
 									</div>
 								</div>
