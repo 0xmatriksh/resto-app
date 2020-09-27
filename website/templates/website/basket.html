@@ -1,0 +1,61 @@
+{% extends 'website/main.html' %}
+{% load static %}
+{% block content %}
+
+<div class="all-page-title page-breadcrumb">
+		<div class="container text-center">
+			<div class="row">
+				<div class="col-lg-12">
+					<h1>Basket</h1>
+				</div>
+			</div>
+		</div>
+</div>
+
+<div class="container h-100">
+<div class="row">
+	<div class="col-lg-12">
+		<div class="box-element">
+            <a  class="btn btn-success" href="">&#x2190; More food? </a>
+            <br>
+            <br>
+            <table class="table">
+                <tr>
+                    <th><h5>Foods: <strong>{{order.total_items}}</strong></h5></th>
+                    <th><h5>Total:<strong>{{order.total_price}}</strong></h5></th>
+                    <th>
+                        <a  style="float:right; margin:5px;" class="btn btn-warning" href="">Checkout</a>
+                    </th>
+                </tr>
+            </table>
+        </div>
+		<br>
+		<div class="box-element">
+            <div class="cart-row">
+                <div style="flex:2"></div>
+                <div style="flex:2"><strong>Food</strong></div>
+                <div style="flex:1"><strong>Price</strong></div>
+                <div style="flex:1"><strong>Quantity</strong></div>
+                <div style="flex:1"><strong>Total</strong></div>
+            </div>
+
+            {% for food in foods %}
+            <div class="cart-row">
+                <div style="flex:2"><img class="row-image" src="{{food.product.imageURL}}"></div>
+                <div style="flex:2"><p>{{food.product.name}}</p></div>
+                <div style="flex:1"><p>{{food.product.price}}</p></div>
+                <div style="flex:1">
+                    <p class="quantity">{{food.quantity}}</p>
+                    <div class="quantity">
+                        <img data-product="" data-action="add" class="chg-quantity update-cart" src="{% static  'images/arrow-up.png' %}">
+
+                        <img data-product="" data-action="remove" class="chg-quantity update-cart" src="{% static  'images/arrow-down.png' %}">
+                    </div>
+                </div>
+                <div style="flex:1"><p>{{food.total}}</p></div>
+            </div>
+            {%endfor%}
+	</div>
+</div>
+    </div>
+{% endblock content %}

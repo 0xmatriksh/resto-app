@@ -41,8 +41,8 @@
 <header class="top-navbar">
 		<nav class="navbar navbar-expand-lg navbar-light bg-light">
 			<div class="container">
-				<a class="navbar-brand" href="index.html">
-					<img src="images/logo.png" alt="" />
+				<a class="navbar-brand" href="{% url 'home' %}">
+					<img src="{% static 'images/logo.png' %}" alt="Logo"/>
 				</a>
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbars-rs-food" aria-controls="navbars-rs-food" aria-expanded="false" aria-label="Toggle navigation">
 				  <span class="navbar-toggler-icon"></span>
@@ -69,6 +69,14 @@
 						</li>
 						<li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">Contact</a></li>
 					</ul>
+					<div class="form-inline my-2 my-lg-0 extra">
+                		<a href="{% url 'login' %}"class="btn btn-warning">Login</a>
+
+                		<a href="{% url 'basket' %}">
+							<img  id="cart-icon" src="{% static 'images/cart.png' %}">
+                		</a>
+                		<p id="cart-total">0</p>
+					</div>
 				</div>
 			</div>
 		</nav>
