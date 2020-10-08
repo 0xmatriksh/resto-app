@@ -67,4 +67,16 @@ class OrderItem(models.Model):
     def total(self):
         return self.product.price * self.quantity
 
+class ShippingAddress(models.Model):
+    customer = models.ForeignKey(Customer,blank=True,null=True,on_delete=models.CASCADE)
+    order = models.ForeignKey(Order,blank=True,null=True,on_delete=models.CASCADE)
+    address = models.CharField(max_length=200,blank=False)
+    city = models.CharField(max_length=200,null=False)
+    state = models.CharField(max_length=200,null=True)
+    zipcode = models.CharField(max_length=200,null=False)
+    data_added = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.address)
+
 

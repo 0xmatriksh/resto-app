@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from .models import Product,Order,OrderItem
-import json
+from .models import Product,Order,OrderItem,ShippingAddress
+import json,datetime
 from django.http import JsonResponse
 
 # Create your views here.
@@ -91,9 +91,37 @@ def updateOrder(request):
 
     if action=='add':
         foods.quantity += 1
+    elif action=='remove':
+        foods.quantity -= 1
     foods.save()
 
+    if foods.quantity <= 0:
+        foods.delete()
+
     return JsonResponse("You are done.",safe=False)
+
+def processOrder(request):
+    transaction_id = datetime.datetime.now().timestamp()
+    data = json.loads(request.body)
+    total = float(data['userform']['total'])
+    customer = request.user.customer
+    order,created = Order.objects.get_or_create(customer=customer,complete=False)
+    order.transaction_id = transaction_id
+
+    if order.total_price == total:
+        order.complete = True
+
+    shipping  = ShippingAddress.objects.create(
+        customer=customer,
+        order = order,
+        address= data['shippingform']['address'],
+        city=data['shippingform']['city'],
+        state=data['shippingform']['state'],
+        zipcode=data['shippingform']['zipcode'],
+    )
+    
+
+    return JsonResponse("it was ordered",safe=False)
 
 def contact(request):
     if request.user.is_authenticated:

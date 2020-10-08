@@ -52,7 +52,7 @@
             <div class="box-element hidden" id="payment-info">
                 <small>Paypal Options</small>
                 <div id="paypal-button-container"></div>
-                <!-- <button id="make-payment">Make Payment</button> -->
+                <button id="make-payment">Make Payment</button>
             </div>
 
 	</div>
@@ -77,4 +77,69 @@
 	</div>
 </div>
 </div>
+<script>
+    var total = '{{order.total_price}}'
+
+    var form = document.getElementById('form')
+
+    //var csrftoken = form.getElementsByTagName("input")[0].value
+    //console.log('Newtoken : ')
+    if (user != 'AnonymousUser'){
+        document.getElementById('user-info').innerHTML = ''
+    }
+    
+    form.addEventListener('submit',function(e){
+        e.preventDefault()
+        console.log('form submitted...')
+        
+        document.getElementById('form-button').classList.add("hidden")
+        document.getElementById("payment-info").classList.remove("hidden")
+    })
+
+    document.getElementById("make-payment").addEventListener('click',function(e){
+        submitFormData()
+    })
+
+    function submitFormData(){
+        console.log("Payment buuton clicked")
+        var userForm = {
+            'name':null,
+            'email':null,
+            'total':total,
+        }
+        var shippingForm = {
+            'address':null,
+            'city':null,
+            'state':null,
+            'zipcode':null,
+        }
+        shippingForm.address = form.address.value
+        shippingForm.city = form.city.value
+        shippingForm.state = form.state.value
+        shippingForm.zipcode = form.zipcode.value
+
+        if(user == 'AnonymousUser'){
+            userForm.name = form.name.value
+            userForm.email = form.email.value
+        }
+
+        var url = '/process-order/'
+
+        fetch(url,{
+            method:'POST',
+            headers:{
+                'Content-Type':'application/json',
+                'X-CSRFToken':csrftoken,
+            },
+            body:JSON.stringify({'userform':userForm,'shippingform':shippingForm}),
+        })
+        .then((response)=>{
+           return response.json()
+        })
+        .then((data)=>{
+           console.log('data',data)
+           window.location.href= "{% url 'menu' %}"
+        })
+    }
+</script>
 {% endblock content %}
