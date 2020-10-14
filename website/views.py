@@ -1,7 +1,12 @@
-from django.shortcuts import render
-from .models import Product,Order,OrderItem,ShippingAddress
+from django.shortcuts import render,redirect
+from .models import Product,Order,OrderItem,ShippingAddress,Customer
 import json,datetime
-from django.http import JsonResponse
+from django.http import JsonResponse,HttpResponseRedirect
+from django.urls import reverse
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate,login as auth_login ,logout
+from .form import CreateUserForm
 
 # Create your views here.
 def home(request):
@@ -68,17 +73,51 @@ def checkout(request):
     }
     return render(request, 'website/checkout.html',context)
 
+def register(request):
+    form = CreateUserForm()
+    if request.method == 'POST':
+        form = CreateUserForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            username = form.cleaned_data.get('username')
+            customer = Customer.objects.create(
+                            user=user,
+                            name=username
+                            )
+            Order.objects.create(
+                            customer=customer,
+                            complete=False
+
+            )
+
+            messages.success(request,'Account was created for ' + username)
+            return redirect('login')
+    context={
+        'form':form
+    }
+    return render(request,'website/register.html',context)
+
 def login(request):
-    if request.user.is_authenticated:
-        customer = request.user.customer
-        order = Order.objects.get(customer=customer)
-    else:
-        order = {'total_items':0,'total_price':0}
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        user = authenticate(request,username=username,password=password)
+        
+        if user is not None:
+            auth_login(request, user)
+            return redirect('menu')
+        else:
+            messages.info(request, "Username or password is incorrect")
     context = {
-        'order': order,
     }
     return render(request, 'website/login.html',context)
 
+def logoutPage(request):
+    logout(request)
+    return redirect('login')
+
+# @login_required(login_url='/website/login/')
 def updateOrder(request):
     data = json.loads(request.body)
     productId,action = data['productId'],data['action']

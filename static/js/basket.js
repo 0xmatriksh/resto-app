@@ -7,6 +7,7 @@ for(var i=0;i<updatecart.length;i++){
     console.log('USER',user)
     if(user=='AnonymousUser'){
     console.log("You are not authenticated.. Login first")
+    window.location.href= "/login/"
     }
     else{
         updatebasket(productId,action)
@@ -34,3 +35,5 @@ function updatebasket(productId,action){
     location.reload()
     })
 }
+
+
